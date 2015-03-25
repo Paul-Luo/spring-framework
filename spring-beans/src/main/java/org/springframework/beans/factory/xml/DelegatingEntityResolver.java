@@ -79,9 +79,15 @@ public class DelegatingEntityResolver implements EntityResolver {
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 		if (systemId != null) {
 			if (systemId.endsWith(DTD_SUFFIX)) {
+				//如果是dtd从这里解析
+				//BeansDtdResolver
+				// 直接截取systemId最后的xx.dtd去当前路径里面找
 				return this.dtdResolver.resolveEntity(publicId, systemId);
 			}
 			else if (systemId.endsWith(XSD_SUFFIX)) {
+				//通过调用META-INF/Spring.schemas解析
+				//PluggableSchemaResolver
+				// 默认到META-INF/Spring.schemas文件中找到systemId所对应的XSD文件并加载
 				return this.schemaResolver.resolveEntity(publicId, systemId);
 			}
 		}

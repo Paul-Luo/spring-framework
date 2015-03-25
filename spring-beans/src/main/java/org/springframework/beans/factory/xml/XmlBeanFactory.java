@@ -63,7 +63,10 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
 	 * @param resource XML resource to load bean definitions from
 	 * @throws BeansException in case of loading or parsing errors
 	 */
+	// BeanFactory bf = new XmlBeanFactory(new ClassPathResource("spring-content.xml"))
+	// 从这个入口开始
 	public XmlBeanFactory(Resource resource) throws BeansException {
+		//调用XmlBeanFactory（Resource,BeanFactory）构造方法，
 		this(resource, null);
 	}
 
@@ -75,6 +78,8 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
 	 * @throws BeansException in case of loading or parsing errors
 	 */
 	public XmlBeanFactory(Resource resource, BeanFactory parentBeanFactory) throws BeansException {
+		//parentBeanFactory为父类BeanFactory用于factory合并，可以为空
+		// 跟踪父类构造方法，有个忽略装配ignoreDependencyInterface方法
 		super(parentBeanFactory);
 		this.reader.loadBeanDefinitions(resource);
 	}

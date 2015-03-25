@@ -57,18 +57,6 @@ public class ResourceEntityResolver extends DelegatingEntityResolver {
 	private final ResourceLoader resourceLoader;
 
 
-	/**
-	 * Create a ResourceEntityResolver for the specified ResourceLoader
-	 * (usually, an ApplicationContext).
-	 * @param resourceLoader the ResourceLoader (or ApplicationContext)
-	 * to load XML entity includes with
-	 */
-	public ResourceEntityResolver(ResourceLoader resourceLoader) {
-		super(resourceLoader.getClassLoader());
-		this.resourceLoader = resourceLoader;
-	}
-
-
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 		InputSource source = super.resolveEntity(publicId, systemId);
@@ -105,6 +93,18 @@ public class ResourceEntityResolver extends DelegatingEntityResolver {
 			}
 		}
 		return source;
+	}
+
+
+	/**
+	 * Create a ResourceEntityResolver for the specified ResourceLoader
+	 * (usually, an ApplicationContext).
+	 * @param resourceLoader the ResourceLoader (or ApplicationContext)
+	 * to load XML entity includes with
+	 */
+	public ResourceEntityResolver(ResourceLoader resourceLoader) {
+		super(resourceLoader.getClassLoader());
+		this.resourceLoader = resourceLoader;
 	}
 
 }
