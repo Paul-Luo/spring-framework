@@ -20,6 +20,7 @@ pom.xml
 buildSrc/build
 /spring-*/build
 target/
+/.idea
 
 # Eclipse artifacts, including WTP generated manifests
 .classpath
