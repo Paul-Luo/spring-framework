@@ -97,7 +97,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
 		this.readerContext = readerContext;
 		logger.debug("Loading bean definitions");
+		// 提取root继续BeanDefinition的继续解析
 		Element root = doc.getDocumentElement();
+		// 核心部分了
 		doRegisterBeanDefinitions(root);
 	}
 
@@ -125,6 +127,16 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * Register each bean definition within the given root {@code <beans/>} element.
 	 */
 	protected void doRegisterBeanDefinitions(Element root) {
+		//处理profile属性
+		/**
+		 * profile属性示例，可以指定不同环境生效
+		 * <beans profile="dev">...</beans>
+		 * 配合web.xml中使用
+		 * <context-param>
+		       <param-name>Spring.profiles.active</param-name>
+		       <param-value>dev</param-value>
+		   </context-param>
+		 */
 		String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 		if (StringUtils.hasText(profileSpec)) {
 			String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
@@ -140,11 +152,17 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// the new (child) delegate with a reference to the parent for fallback purposes,
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
+
+		//专门处理解析
 		BeanDefinitionParserDelegate parent = this.delegate;
 		this.delegate = createDelegate(this.readerContext, root, parent);
 
+		//解析前处理，留给子类实现 模板方法模式
 		preProcessXml(root);
+
 		parseBeanDefinitions(root, this.delegate);
+
+		//解析后处理，留给子类实现
 		postProcessXml(root);
 
 		this.delegate = parent;
@@ -174,6 +192,8 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * @param root the DOM root element of the document
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+		//对beans的处理
+		// 默认的命名空间 http://www.springframework.org/schema/beans
 		if (delegate.isDefaultNamespace(root)) {
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
@@ -181,9 +201,13 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				if (node instanceof Element) {
 					Element ele = (Element) node;
 					if (delegate.isDefaultNamespace(ele)) {
+						//对bean的处理
+						// 默认标签 beans bean import alias
 						parseDefaultElement(ele, delegate);
 					}
 					else {
+						//对bean的处理
+						// 自定义标签处理 如<tx:annotation-driven/>
 						delegate.parseCustomElement(ele);
 					}
 				}
