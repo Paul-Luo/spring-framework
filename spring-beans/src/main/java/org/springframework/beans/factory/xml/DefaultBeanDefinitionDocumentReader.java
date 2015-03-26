@@ -139,6 +139,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		 */
 		String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 		if (StringUtils.hasText(profileSpec)) {
+			// 按照 , ; 空格 分割
 			String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
 					profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);
 			if (!getEnvironment().acceptsProfiles(specifiedProfiles)) {
@@ -343,8 +344,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * and registering it with the registry.
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
+		// bdHolder中包含配置中的各个属性，包括class name id alias
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
+			// 如果默认标签的子节点下面再有自定义属性，还需要再次对自定义标签进行解析
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
 				// Register the final decorated instance.
