@@ -566,6 +566,9 @@ public class BeanDefinitionParserDelegate {
 			 */
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
+
+			// 下面解析子节点元素
+
 			//解析元数据
 			/**
 			 * <bean ...
@@ -596,11 +599,16 @@ public class BeanDefinitionParserDelegate {
 			//解析property子元素
 			/**
 			 * <bean ...
-			 *     <property name="name" /> ...
+			 *     <property name="name"  value="value"/> ...
 			 *
 			 */
 			parsePropertyElements(ele, bd);
 			//解析qualifier子元素
+			/**
+			 * <bean ...
+			 *     <qualifier type="" value=""/> ...
+			 *
+			 */
 			parseQualifierElements(ele, bd);
 
 			bd.setResource(this.readerContext.getResource());
@@ -666,20 +674,22 @@ public class BeanDefinitionParserDelegate {
 		if (DEFAULT_VALUE.equals(lazyInit)) {
 			lazyInit = this.defaults.getLazyInit();
 		}
+		// 没有设置或者设置成其他都被设置成false
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
 		//解析autowire属性 设置自动注入依赖对象 e.x <bean autowire="byName" ...
 		String autowire = ele.getAttribute(AUTOWIRE_ATTRIBUTE);
 		bd.setAutowireMode(getAutowireMode(autowire));
-
+		//解析dependency-check属性 e.x <bean autowire="dependency-check" ...
 		String dependencyCheck = ele.getAttribute(DEPENDENCY_CHECK_ATTRIBUTE);
 		bd.setDependencyCheck(getDependencyCheck(dependencyCheck));
 
+		//解析depends-on属性
 		if (ele.hasAttribute(DEPENDS_ON_ATTRIBUTE)) {
 			String dependsOn = ele.getAttribute(DEPENDS_ON_ATTRIBUTE);
 			bd.setDependsOn(StringUtils.tokenizeToStringArray(dependsOn, MULTI_VALUE_ATTRIBUTE_DELIMITERS));
 		}
-
+		//解析autowire-candidate属性 布尔值类型，设置为false时自动装配不考虑这个bean
 		String autowireCandidate = ele.getAttribute(AUTOWIRE_CANDIDATE_ATTRIBUTE);
 		if ("".equals(autowireCandidate) || DEFAULT_VALUE.equals(autowireCandidate)) {
 			String candidatePattern = this.defaults.getAutowireCandidates();
@@ -691,11 +701,12 @@ public class BeanDefinitionParserDelegate {
 		else {
 			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate));
 		}
-
+		//解析primary属性 布尔值类型 当有多个可以装配的bean时 如果只有一个设置为true优先被选择
 		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {
 			bd.setPrimary(TRUE_VALUE.equals(ele.getAttribute(PRIMARY_ATTRIBUTE)));
 		}
 
+		//解析init-method属性
 		if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) {
 			String initMethodName = ele.getAttribute(INIT_METHOD_ATTRIBUTE);
 			if (!"".equals(initMethodName)) {
@@ -1046,6 +1057,7 @@ public class BeanDefinitionParserDelegate {
 		boolean hasValueAttribute = ele.hasAttribute(VALUE_ATTRIBUTE);
 		if ((hasRefAttribute && hasValueAttribute) ||
 				((hasRefAttribute || hasValueAttribute) && subElement != null)) {
+			// ref value 和 value节点只能有一个
 			error(elementName +
 					" is only allowed to contain either 'ref' attribute OR 'value' attribute OR sub-element", ele);
 		}
