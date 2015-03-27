@@ -543,14 +543,14 @@ public class BeanDefinitionParserDelegate {
 		this.parseState.push(new BeanEntry(beanName));
 
 		String className = null;
-		// 解析class属性
+		// 解析class属性 <bean class="com.xx.yy" ...
 		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
 
 		try {
 			String parent = null;
-			// 解析parent属性
+			// 解析parent属性 <bean parent="ct" ...
 			if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
 				parent = ele.getAttribute(PARENT_ATTRIBUTE);
 			}
@@ -560,18 +560,45 @@ public class BeanDefinitionParserDelegate {
 			//硬编码解析默认bean的各种属性 scope lazy-init等属性
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			//保存description属性
+			/**
+			 * <bean ...
+			 *  <description>xx</description> ...
+			 */
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
 			//解析元数据
+			/**
+			 * <bean ...
+			 *  <meta key="key" value="value" /> ...
+			 */
 			parseMetaElements(ele, bd);
 			//解析lookup-method属性
+			/**
+			 * <bean ...
+			 *  <lookup-method name="methodName" bean="beanRef"/> ...
+			 */
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
 			//解析replaced-method属性
+			/**
+			 * <bean ...
+			 *     <lookup-method name="methodName" replacer="replacer-ref"/> ...
+			 *
+			 */
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
 			//解析构造函数参数
+			/**
+			 * <bean ...
+			 *     <constructor-arg index="" /> ...
+			 *
+			 */
 			parseConstructorArgElements(ele, bd);
 			//解析property子元素
+			/**
+			 * <bean ...
+			 *     <property name="name" /> ...
+			 *
+			 */
 			parsePropertyElements(ele, bd);
 			//解析qualifier子元素
 			parseQualifierElements(ele, bd);
@@ -607,7 +634,7 @@ public class BeanDefinitionParserDelegate {
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 			BeanDefinition containingBean, AbstractBeanDefinition bd) {
 
-		// 解析scope属性 对象是否为单例 singleton prototype
+		// 解析scope属性 对象是否为单例 singleton prototype <bean scope="singleton" ...
 		if (ele.hasAttribute(SCOPE_ATTRIBUTE)) {
 			// Spring 2.x "scope" attribute
 			bd.setScope(ele.getAttribute(SCOPE_ATTRIBUTE));
@@ -616,7 +643,7 @@ public class BeanDefinitionParserDelegate {
 				error("Specify either 'scope' or 'singleton', not both", ele);
 			}
 		}
-		//解析singleton属性 布尔值类型
+		//解析singleton属性 布尔值类型 <bean singleton="true" ...
 		else if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
 			// Spring 1.x "singleton" attribute
 			// true为singleton flase为prototype
@@ -629,19 +656,19 @@ public class BeanDefinitionParserDelegate {
 			bd.setScope(containingBean.getScope());
 		}
 
-		// 解析abstract属性 布尔值类型 不能实例化，可以起到模板作用
+		// 解析abstract属性 布尔值类型 不能实例化，可以起到模板作用 <bean abstract="true" ...
 		if (ele.hasAttribute(ABSTRACT_ATTRIBUTE)) {
 			bd.setAbstract(TRUE_VALUE.equals(ele.getAttribute(ABSTRACT_ATTRIBUTE)));
 		}
 
-		// 解析lazy-init属性 布尔值类型 可以设置bean延迟加载
+		// 解析lazy-init属性 布尔值类型 可以设置bean延迟加载 <bean lazy-init="true" ...
 		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE);
 		if (DEFAULT_VALUE.equals(lazyInit)) {
 			lazyInit = this.defaults.getLazyInit();
 		}
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
-		//解析autowire属性 设置自动注入依赖对象
+		//解析autowire属性 设置自动注入依赖对象 e.x <bean autowire="byName" ...
 		String autowire = ele.getAttribute(AUTOWIRE_ATTRIBUTE);
 		bd.setAutowireMode(getAutowireMode(autowire));
 
