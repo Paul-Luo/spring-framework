@@ -701,12 +701,12 @@ public class BeanDefinitionParserDelegate {
 		else {
 			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate));
 		}
-		//解析primary属性 布尔值类型 当有多个可以装配的bean时 如果只有一个设置为true优先被选择
+		//解析primary属性 布尔值类型 当有多个可以装配的bean时 如果只有一个设置为true优先被选择，默认为false
 		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {
 			bd.setPrimary(TRUE_VALUE.equals(ele.getAttribute(PRIMARY_ATTRIBUTE)));
 		}
 
-		//解析init-method属性
+		//解析init-method属性 Constructor > @PostConstruct > InitializingBean > init-method
 		if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) {
 			String initMethodName = ele.getAttribute(INIT_METHOD_ATTRIBUTE);
 			if (!"".equals(initMethodName)) {
