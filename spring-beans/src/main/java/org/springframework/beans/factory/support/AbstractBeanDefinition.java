@@ -139,55 +139,82 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	private String scope = SCOPE_DEFAULT;
 
+	// bean是否单例
 	private boolean singleton = true;
 
 	private boolean prototype = false;
 
+	// 是否是抽象 abstract 一般做模板用
 	private boolean abstractFlag = false;
 
+	// 延迟加载 lazy-init属性
 	private boolean lazyInit = false;
 
+	// 自动注入模式 autowire属性
 	private int autowireMode = AUTOWIRE_NO;
 
 	private int dependencyCheck = DEPENDENCY_CHECK_NONE;
 
+	//来表示一个bean的实例化依靠另一个bean先实例化,对应bean属性depend-on
 	private String[] dependsOn;
 
+	//
 	private boolean autowireCandidate = true;
 
+	// 自动装配时当出现多个bean候选者时，将作为首选者,对应bean属性primary
 	private boolean primary = false;
 
+	//用于记录Qualifier，对应子元素qualifier
 	private final Map<String, AutowireCandidateQualifier> qualifiers =
 			new LinkedHashMap<String, AutowireCandidateQualifier>(0);
 
+	// 允许访问非公开的构造器和方法，程序设置
 	private boolean nonPublicAccessAllowed = true;
 
+	// 是否以一种宽松的模式解析构造函数，默认为true,
 	private boolean lenientConstructorResolution = true;
 
+	//记录构造函数注入属性，对应bean属性constructor-arg
 	private ConstructorArgumentValues constructorArgumentValues;
 
+	//普通属性集合
 	private MutablePropertyValues propertyValues;
 
+	//方法重写的持有者 ,记录lookup-method、replaced-method元素
 	private MethodOverrides methodOverrides = new MethodOverrides();
 
 	private String factoryBeanName;
 
 	private String factoryMethodName;
 
+	//初始化方法，对应bean属性init-method
 	private String initMethodName;
 
+	//销毁方法，对应bean属性destory-method
 	private String destroyMethodName;
 
+	//是否执行init-method，程序设置
 	private boolean enforceInitMethod = true;
 
+	//是否执行destory-method，程序设置
 	private boolean enforceDestroyMethod = true;
 
+	//是否是用户定义的而不是应用程序本身定义的,创建AOP时候为true，程序设置
 	private boolean synthetic = false;
 
+	/**
+	 * 定义这个bean的应用 ，
+	 * APPLICATION：用户，
+	 * INFRASTRUCTURE：完全内部使用，与用户无关，
+	 * SUPPORT：某些复杂配置的一部分
+	 * 程序设置
+	 */
 	private int role = BeanDefinition.ROLE_APPLICATION;
 
+	//* bean的描述信息
 	private String description;
 
+	//这个bean定义的资源
 	private Resource resource;
 
 

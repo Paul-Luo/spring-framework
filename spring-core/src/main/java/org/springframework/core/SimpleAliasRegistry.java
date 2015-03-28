@@ -45,9 +45,11 @@ public class SimpleAliasRegistry implements AliasRegistry {
 		Assert.hasText(name, "'name' must not be empty");
 		Assert.hasText(alias, "'alias' must not be empty");
 		if (alias.equals(name)) {
+			//如果beanName与alias相同的话不记录alias,并删除对应的alias
 			this.aliasMap.remove(alias);
 		}
 		else {
+			//如果alias不允许被覆盖则抛出异常
 			if (!allowAliasOverriding()) {
 				String registeredName = this.aliasMap.get(alias);
 				if (registeredName != null && !registeredName.equals(name)) {
@@ -55,6 +57,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 							name + "': It is already registered for name '" + registeredName + "'.");
 				}
 			}
+			//当A->B存在时，若再次出现B->C->A时候则会抛出异常
 			checkForAliasCircle(name, alias);
 			this.aliasMap.put(alias, name);
 		}
@@ -168,6 +171,12 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	 * @see #registerAlias
 	 */
 	protected void checkForAliasCircle(String name, String alias) {
+		/***
+		 * A->B
+		 * B->C
+		 *
+		 * C->A 异常
+		 */
 		if (alias.equals(canonicalName(name))) {
 			throw new IllegalStateException("Cannot register alias '" + alias +
 					"' for name '" + name + "': Circular reference - '" +
