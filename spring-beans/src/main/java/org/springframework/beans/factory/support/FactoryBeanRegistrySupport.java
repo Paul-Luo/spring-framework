@@ -95,6 +95,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
 	protected Object getObjectFromFactoryBean(FactoryBean<?> factory, String beanName, boolean shouldPostProcess) {
+		//如果是单例模式
 		if (factory.isSingleton() && containsSingleton(beanName)) {
 			synchronized (getSingletonMutex()) {
 				Object object = this.factoryBeanObjectCache.get(beanName);
@@ -109,6 +110,9 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 					else {
 						if (object != null && shouldPostProcess) {
 							try {
+								//调用ObjectFactory的后处理器
+								// AbstractAutowireCapableBeanFactory.postProcessObjectFromFactoryBean(object, beanName)
+								// 尽可能保证所有bean初始化后都会调用注册的BeanPostProcessor的postProcessAfterInitialization方法进行处理
 								object = postProcessObjectFromFactoryBean(object, beanName);
 							}
 							catch (Throwable ex) {
@@ -149,6 +153,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 
 		Object object;
 		try {
+			//需要权限验证
 			if (System.getSecurityManager() != null) {
 				AccessControlContext acc = getAccessControlContext();
 				try {
@@ -163,6 +168,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 				}
 			}
 			else {
+				//直接调用getObject方法
 				object = factory.getObject();
 			}
 		}

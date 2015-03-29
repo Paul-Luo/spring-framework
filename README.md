@@ -1,6 +1,6 @@
 ## 3.2.x 分支 读源码
 
-### xml加载部分
+### xml解析部分
 入口
 ```java
 BeanFactory bf = new XmlBeanFactory(new ClassPathResource("spring-content.xml"));

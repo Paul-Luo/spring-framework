@@ -69,6 +69,7 @@ public interface FactoryBean<T> {
 	 * @throws Exception in case of creation errors
 	 * @see FactoryBeanNotInitializedException
 	 */
+	//返回由FactoryBean创建的bean实例
 	T getObject() throws Exception;
 
 	/**
@@ -115,6 +116,7 @@ public interface FactoryBean<T> {
 	 * @see #getObject()
 	 * @see SmartFactoryBean#isPrototype()
 	 */
+	//如果isSingleton()返回true，则该实例会放到Spring容器中单实例缓存池中。
 	boolean isSingleton();
 
 }

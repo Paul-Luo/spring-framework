@@ -434,10 +434,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			logger.debug("Creating instance of bean '" + beanName + "'");
 		}
 		// Make sure bean class is actually resolved at this point.
+		//锁定class,根据设置的class属性或者根据className来解析Class
 		resolveBeanClass(mbd, beanName);
 
 		// Prepare method overrides.
 		try {
+			//验证及准备覆盖的方法
+			// 针对lookup-method和replace-method
 			mbd.prepareMethodOverrides();
 		}
 		catch (BeanDefinitionValidationException ex) {
@@ -447,6 +450,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			//给BeanPostProcessors一个机会来返回代理来替代真正的实例
 			Object bean = resolveBeforeInstantiation(beanName, mbd);
 			if (bean != null) {
 				return bean;
