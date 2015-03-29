@@ -3,9 +3,14 @@
 ### xml加载部分
 入口
 ```java
-BeanFactory bf = new XmlBeanFactory(new ClassPathResource("spring-content.xml"))
+BeanFactory bf = new XmlBeanFactory(new ClassPathResource("spring-content.xml"));
 ```
 
+### bean的加载
+入口 `AbstractBeanFactory.getBean(String beanName)`
+```java
+TestBean tb = (TestBean) bf.getBean("testBean");
+```
 
 
 ## License

@@ -38,6 +38,7 @@ public class XmlReaderContext extends ReaderContext {
 
 	private final XmlBeanDefinitionReader reader;
 
+	// 初始化为DefaultNamespaceHandlerResolver实例
 	private final NamespaceHandlerResolver namespaceHandlerResolver;
 
 
