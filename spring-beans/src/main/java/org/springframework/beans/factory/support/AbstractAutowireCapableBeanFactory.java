@@ -1000,7 +1000,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				return autowireConstructor(beanName, mbd, null, null);
 			}
 			else {
-				//使用默认构造函数构造
+				//使用默认构造函数构造，不带参数的构造函数
 				return instantiateBean(beanName, mbd);
 			}
 		}
